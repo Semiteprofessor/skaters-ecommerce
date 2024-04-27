@@ -1,4 +1,4 @@
-import ProductCardSkeleton from "@/components/skeletons/ProductCardSkeleton";
+import ProductCardSkeleton from "@/components/skeletons/OrderCardSkeleton";
 
 const PopularProductsSkeleton = () => {
   return (
