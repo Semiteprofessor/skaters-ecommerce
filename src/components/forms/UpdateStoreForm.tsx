@@ -36,3 +36,30 @@ export const UpdateStoreForm: React.FC<UpdateStoreFormProps> = ({ store }) => {
       description: store.description!,
     },
   })
+
+  const onSubmit = async (values: storePayload) => {
+    try {
+      setIsLoading(true)
+      await axios.patch(`/api/stores/${store.id}`, values)
+      toast.success('Store is updated.')
+      window.location.assign('/dashboard/stores')
+    } catch (error: any) {
+      toast.error(error.response.data)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const onDelete = async () => {
+    try {
+      setIsLoading(true)
+      await axios.delete(`/api/stores/${store.id}`)
+      window.location.assign('/dashboard/stores')
+      toast.success('Store is deleted.')
+    } catch (error: any) {
+      toast.error(error.response.data)
+    } finally {
+      setIsLoading(false)
+      setOpen(false)
+    }
+  }
