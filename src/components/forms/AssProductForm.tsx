@@ -29,3 +29,32 @@ import { Textarea } from "@/components/ui/Textarea";
 import { productPayload, productSchema } from "@/lib/validators/product";
 
 import { FileUpload } from "./FileUpload";
+
+export function AddProductForm() {
+  const [isLoading, setIsLoading] = useState<boolean>(false)
+  const params = useParams()
+  const router = useRouter()
+
+  const form = useForm<productPayload>({
+    resolver: zodResolver(productSchema),
+    defaultValues: {
+      name: '',
+      description: '',
+    },
+  })
+
+  const onSubmit = async (values: productPayload) => {
+    try {
+      setIsLoading(true)
+      const { data }: { data: Product } = await axios.post(
+        `/api/stores/${params.storeId}/products`,
+        values,
+      )
+      toast.success('Product is created.')
+      router.push(`/${data.storeId}/${data.slug}?productId=${data.id}`)
+    } catch (error: any) {
+      toast.error(error.response.data)
+    } finally {
+      setIsLoading(false)
+    }
+  }
