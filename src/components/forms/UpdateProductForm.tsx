@@ -103,3 +103,57 @@ export function UpdateProductForm({ product }: { product: Product }) {
             </FormItem>
           )}
         />
+        <div className='flex flex-col items-start gap-6 sm:flex-row'>
+          <FormField
+            control={form.control}
+            name='category'
+            render={({ field }) => (
+              <FormItem className='flex-1 w-full'>
+                <FormLabel>Category</FormLabel>
+                <Select
+                  value={field.value}
+                  onValueChange={(value: typeof field.value) =>
+                    field.onChange(value)
+                  }
+                >
+                  <FormControl>
+                    <SelectTrigger>
+                      <SelectValue placeholder='Select a category' />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    <SelectItem value='skateboards'>Skateboards</SelectItem>
+                    <SelectItem value='clothing'>Clothing</SelectItem>
+                    <SelectItem value='shoes'>Shoes</SelectItem>
+                    <SelectItem value='accessories'>Accessories</SelectItem>
+                  </SelectContent>
+                </Select>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name='price'
+            render={({ field }) => (
+              <FormItem className='flex-1 w-full'>
+                <FormLabel>Price</FormLabel>
+                <FormControl>
+                  <div className='relative'>
+                    <p className='absolute text-sm left-0 w-8 inset-y-0 grid place-items-center'>
+                      Rp
+                    </p>
+                    <Input
+                      type='number'
+                      className='pl-8'
+                      placeholder='0'
+                      disabled={isLoading}
+                      {...field}
+                    />
+                  </div>
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+        </div>
