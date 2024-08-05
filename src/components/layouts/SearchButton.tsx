@@ -3,7 +3,7 @@ import { Search } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useCallback, useEffect, useState, useTransition } from 'react'
 
-import searchProducts from '@/actions/search-products'
+import searchProducts from '@/actions/s'
 import { Button } from '@/components/ui/Button'
 import {
   CommandDialog,
