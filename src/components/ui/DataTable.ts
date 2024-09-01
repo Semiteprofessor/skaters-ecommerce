@@ -31,3 +31,53 @@ interface DataTableProps<TData, TValue> {
   data: TData[];
   searchKey: string;
 }
+
+export function DataTable<TData, TValue>({
+  columns,
+  data,
+  searchKey,
+}: DataTableProps<TData, TValue>) {
+  const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
+
+  const table = useReactTable({
+    data,
+    columns,
+    getCoreRowModel: getCoreRowModel(),
+    getPaginationRowModel: getPaginationRowModel(),
+    onColumnFiltersChange: setColumnFilters,
+    getFilteredRowModel: getFilteredRowModel(),
+    state: {
+      columnFilters,
+    },
+  })
+
+  const params = useParams()
+
+  return (
+    <>
+      <div className='flex items-center justify-between gap-2 px-1 pb-4'>
+        <Input
+          placeholder='Search'
+          value={(table.getColumn(searchKey)?.getFilterValue() as string) ?? ''}
+          onChange={(event) =>
+            table.getColumn(searchKey)?.setFilterValue(event.target.value)
+          }
+          className='max-w-sm'
+        />
+        <Link
+          aria-label='Create new row'
+          href={`/dashboard/stores/${params.storeId}/new`}
+        >
+          <div
+            className={cn(
+              buttonVariants({
+                size: 'sm',
+                className: 'h-8',
+              }),
+            )}
+          >
+            <PlusCircleIcon className='mr-2 h-4 w-4' aria-hidden='true' />
+            New
+          </div>
+        </Link>
+      </div>
