@@ -20,41 +20,67 @@ const OrdersList: React.FC<OrdersListProps> = ({
   initialOrders,
   totalData,
 }) => {
-  const lastOrderRef = useRef<HTMLElement>(null)
+  const lastOrderRef = useRef<HTMLElement>(null);
 
   const { ref, entry } = useIntersection({
     root: lastOrderRef.current,
     threshold: 1,
-  })
+  });
 
-  const searchParams = useSearchParams()
-  const status = searchParams.get('status')
+  const searchParams = useSearchParams();
+  const status = searchParams.get("status");
 
   const { data, fetchNextPage, isFetchingNextPage, refetch } = useInfiniteQuery(
     {
-      queryKey: ['infinite-query'],
+      queryKey: ["infinite-query"],
       queryFn: async ({ pageParam }) => {
         const { data } = await axios.get(
-          `/api/orders?limit=${ORDER_INFINITE_SCROLL_LIMIT}&page=${pageParam}&status=${status}`,
-        )
-        return data as Order[]
+          `/api/orders?limit=${ORDER_INFINITE_SCROLL_LIMIT}&page=${pageParam}&status=${status}`
+        );
+        return data as Order[];
       },
       initialPageParam: 1,
       getNextPageParam: (lastPage, allPages) => {
-        return allPages.length + 1
+        return allPages.length + 1;
       },
       initialData: { pages: [initialOrders], pageParams: [1] },
-    },
-  )
+    }
+  );
 
   useEffect(() => {
     if (entry?.isIntersecting) {
-      fetchNextPage()
+      fetchNextPage();
     }
-  }, [entry, fetchNextPage])
+  }, [entry, fetchNextPage]);
 
   useEffect(() => {
-    refetch()
-  }, [status, refetch])
+    refetch();
+  }, [status, refetch]);
 
-  const orders = data?.pages.flatMap((page) => page) ?? initialOrders
+  const orders = data?.pages.flatMap((page) => page) ?? initialOrders;
+
+  return (
+    <>
+      {orders.length > 0 ? (
+        orders.map((order, index) => {
+          if (index === orders.length - 1 && orders.length < totalData) {
+            return (
+              <div key={order.id} ref={ref}>
+                <OrderCard order={order} />
+              </div>
+            );
+          } else {
+            return <OrderCard key={order.id} order={order} />;
+          }
+        })
+      ) : (
+        <div className="min-h-[200px]">
+          <h2 className="font-semibold text-xl text-center">No orders found</h2>
+        </div>
+      )}
+      {isFetchingNextPage && <OrderCardSkeleton />}
+    </>
+  );
+};
+
+export default OrdersList;
